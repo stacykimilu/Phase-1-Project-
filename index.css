@@ -2,7 +2,7 @@ body {
     background-image: url(images/barfrontpage.png);
     background-repeat: no-repeat;
     background-size: cover;
-    color: black;
+    color: white;
 }
 
 .container {
@@ -20,6 +20,7 @@ button {
 #cocktailList {
     margin-top: 20px;
     text-align: left;
+    background-color: white;
 }
 
 .cocktail {

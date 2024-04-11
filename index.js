@@ -12,6 +12,23 @@ function searchCocktails() {
       });
   }
   
+function saveCocktail(cocktailId){
+  fetch("http://localhost:3000/cocktails", {
+    method: "POST",
+    body: JSON.stringify({ cocktailId })
+  })
+  .then(res => res.json())
+  .then(data => console.log(data))
+}
+
+function removeCocktail(id){
+  fetch(`http://localhost:3000/cocktails/${id}`, {
+    method: "DELETE",
+  })
+  .then(res => res.json())
+  .then(data => console.log(data))
+}
+
   function displayCocktails(cocktails) {
     const cocktailList = document.getElementById('cocktailList');
     cocktailList.innerHTML = '';
@@ -30,6 +47,7 @@ function searchCocktails() {
         <p>Category: ${cocktail.strCategory}</p>
         <p>Glass: ${cocktail.strGlass}</p>
         <p>Instructions: ${cocktail.strInstructions}</p>
+        <button onclick="saveCocktail(${cocktail.idDrink})">Save</button>
       `;
       cocktailList.appendChild(cocktailDiv);
     });
