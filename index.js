@@ -45,8 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
           .catch(error => console.error("Error saving cocktail:", error));
   }
 
- 
-  // Function to delete cocktail data
+ // Function to delete cocktail data
 function deleteCocktail(cocktailId) {
   fetch(`http://localhost:3000/cocktails/${cocktailId}`, {
       method: "DELETE",
@@ -54,15 +53,19 @@ function deleteCocktail(cocktailId) {
           "Content-Type": "application/json"
       }
   })
-  .then(res => {
-      if (!res.ok) {
-          throw new Error('Failed to delete cocktail');
+  .then(res => res.json())
+  .then(data => {
+      console.log("Cocktail deleted successfully:", data);
+      
+      // Remove the deleted cocktail from the DOM
+      const deletedCocktailDiv = document.querySelector(`[data-id="${cocktailId}"]`);
+      if (deletedCocktailDiv) {
+          deletedCocktailDiv.remove(); // Remove the HTML element
+          console.log("Deleted cocktail removed from the DOM");
       }
-      console.log("Cocktail deleted successfully");
   })
   .catch(error => console.error("Error deleting cocktail:", error));
 }
-
 
   // Function to display cocktails
   function displayCocktails(cocktails) {
