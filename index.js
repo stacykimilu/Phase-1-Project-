@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
     cocktails.forEach(cocktail => {
       const instructions = cocktail.strInstructions.charAt(0).toUpperCase() + cocktail.strInstructions.slice(1).toLowerCase();
 
-
+      
       // Create a new object with the manipulated data
       const modifiedCocktail = {
         ...cocktail,
