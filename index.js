@@ -1,109 +1,96 @@
 document.addEventListener('DOMContentLoaded', function () {
-  // Get references to search button and input
+  // Get references to search button, search input, and cocktail list
   const searchButton = document.getElementById('searchButton');
   const searchInput = document.getElementById('searchInput');
+  const cocktailList = document.getElementById('cocktailList');
 
-  // Search button click event listener
-  searchButton.addEventListener('click', function () {
-      searchCocktails();
-  });
+  // Check if required elements exist
+  if (!searchButton || !searchInput || !cocktailList) {
+      console.error('Required elements not found.');
+      return;
+  }
 
-  // Search input change event listener 
-  searchInput.addEventListener('input', function () {
-      console.log('Search input value changed:', searchInput.value);
-      searchCocktails();
-  });
+  // Add event listeners for search button click and input change
+  searchButton.addEventListener('click', searchCocktails);
+  searchInput.addEventListener('input', searchCocktails);
 
   // Function to search for cocktails
   function searchCocktails() {
-      const searchInputValue = searchInput.value;
-      // Construct the API URL with the search query
-      const url = `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${searchInputValue}`;
+      const searchInputValue = searchInput.value.trim();
+      if (!searchInputValue) {
+          displayMessage('Please enter a search query.');
+          return;
+      }
+      
+      // Construct API URL with search query
+      const url = `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(searchInputValue)}`;
 
+      // Fetch cocktails from API
       fetch(url)
-          .then(response => response.json())
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error('Network response was not ok.');
+              }
+              return response.json();
+          })
           .then(data => {
-              // Display the cocktails received from the API
+              // Display cocktails if found
+              if (!data.drinks) {
+                  displayMessage('No cocktails found.');
+                  return;
+              }
               displayCocktails(data.drinks);
           })
           .catch(error => {
-              console.error('Error fetching data:', error.message);
+              // Handle errors during fetching
+              console.error('Error fetching data:', error);
+              displayMessage('An error occurred. Please try again later.');
           });
   }
 
-  // Function to save cocktail data
-  function saveCocktail() {
-      fetch("http://localhost:3000/cocktails", {
-          method: "POST",
-          headers: {
-              "Content-Type": "application/json"
-          },
-          body: JSON.stringify({}) // No argument passed
-      })
-          .then(res => res.json())
-          .then(data => console.log(data))
-          .catch(error => console.error("Error saving cocktail:", error));
-  }
-
- // Function to delete cocktail data
-function deleteCocktail(cocktailId) {
-  fetch(`http://localhost:3000/cocktails/${cocktailId}`, {
-      method: "DELETE",
-      headers: {
-          "Content-Type": "application/json"
-      }
-  })
-  .then(res => res.json())
-  .then(data => {
-      console.log("Cocktail deleted successfully:", data);
-      
-      // Remove the deleted cocktail from the DOM
-      const deletedCocktailDiv = document.querySelector(`[data-id="${cocktailId}"]`);
-      if (deletedCocktailDiv) {
-          deletedCocktailDiv.remove(); // Remove the HTML element
-          console.log("Deleted cocktail removed from the DOM");
-      }
-  })
-  .catch(error => console.error("Error deleting cocktail:", error));
+   // Function to save cocktail data
+   function saveCocktail() {
+    // Implement save functionality here
+    fetch("http://localhost:3000/cocktails", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({})
+    })
+        .then(res => res.json())
+        .then(data => console.log(data))
+        .catch(error => console.error("Error saving cocktail:", error));
 }
 
   // Function to display cocktails
   function displayCocktails(cocktails) {
-      console.log('Received cocktails:', cocktails);
-      const cocktailList = document.getElementById('cocktailList');
+      //  cocktail list
       cocktailList.innerHTML = '';
-
-      if (!cocktails) {
-          cocktailList.innerHTML = '<p>No cocktails found</p>';
-          return;
-      }
-
+      // Iterate over each cocktail and display it
       cocktails.forEach(cocktail => {
-          const instructions = cocktail.strInstructions.charAt(0).toUpperCase() + cocktail.strInstructions.slice(1).toLowerCase();
-
-          // Create a new object with the manipulated data
-          const modifiedCocktail = {
-              ...cocktail,
-              strInstructions: instructions
-          };
-
+          const instructions = cocktail.strInstructions ? 
+                               cocktail.strInstructions.charAt(0).toUpperCase() + cocktail.strInstructions.slice(1).toLowerCase() :
+                               'No instructions available';
           const cocktailDiv = document.createElement('div');
           cocktailDiv.classList.add('cocktail');
-          cocktailDiv.dataset.id = cocktail.idDrink; // Set data-id attribute
+          cocktailDiv.dataset.id = cocktail.idDrink;
           cocktailDiv.innerHTML = `
-              <h2>${modifiedCocktail.strDrink}</h2>
-              <img src="${modifiedCocktail.strDrinkThumb}" alt="${modifiedCocktail.strDrink}" width="100">
-              <p>Category: ${modifiedCocktail.strCategory}</p>
-              <p>Glass: ${modifiedCocktail.strGlass}</p>
-              <p>Instructions: ${modifiedCocktail.strInstructions}</p>
+              <h2>${cocktail.strDrink}</h2>
+              <img src="${cocktail.strDrinkThumb}" alt="${cocktail.strDrink}" width="100">
+              <p>Category: ${cocktail.strCategory || 'Unknown'}</p>
+              <p>Glass: ${cocktail.strGlass || 'Unknown'}</p>
+              <p>Instructions: ${instructions}</p>
               <button class="save-btn">Save Cocktail</button>
-              <button class="delete-btn">Delete Cocktail</button>
           `;
           cocktailList.appendChild(cocktailDiv);
-
-          // Attach event listeners dynamically
+          // Add event listener for save button
           cocktailDiv.querySelector('.save-btn').addEventListener('click', saveCocktail);
-          cocktailDiv.querySelector('.delete-btn').addEventListener('click', () => deleteCocktail(cocktail.idDrink));
       });
+  }
+
+  // Function to display messages in the cocktail list
+  function displayMessage(message) {
+      cocktailList.innerHTML = `<p>${message}</p>`;
   }
 });
