@@ -45,26 +45,6 @@ document.addEventListener('DOMContentLoaded', function () {
           .catch(error => console.error("Error saving cocktail:", error));
   }
 
-  // Function to delete cocktail data
-  async function deleteCocktail(cocktailId) {
-      try {
-          const requestOptions = {
-              method: "DELETE"
-          };
-          const response = await fetch(`http://localhost:3000/cocktails/${cocktailId}`, requestOptions);
-          if (!response.ok) {
-              throw new Error("Failed to delete cocktail.");
-          }
-          // Remove the cocktail from the UI
-          const cocktailElement = document.querySelector(`[data-id="${cocktailId}"]`);
-          if (cocktailElement) {
-              cocktailElement.remove();
-          }
-      } catch (error) {
-          console.error("Error deleting cocktail:", error);
-      }
-  }
-
   // Function to display cocktails
   function displayCocktails(cocktails) {
       console.log('Received cocktails:', cocktails);
