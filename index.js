@@ -11,18 +11,19 @@ document.addEventListener('DOMContentLoaded', function () {
   // Search input change event listener (optional)
   searchInput.addEventListener('input', function () {
     console.log('Search input value changed:', searchInput.value);
-    // Uncomment to search on every input change
-    // searchCocktails();
+    searchCocktails();
   });
 
   // Function to search for cocktails
   function searchCocktails() {
     const searchInputValue = searchInput.value;
+    // Construct the API URL with the search query
     const url = `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${searchInputValue}`;
 
     fetch(url)
       .then(response => response.json())
       .then(data => {
+        // Display the cocktails received from the API
         displayCocktails(data.drinks);
       })
       .catch(error => {
@@ -38,34 +39,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // Function to save cocktail data
   function saveCocktail(cocktailData) {
-    const { idDrink, strDrink, strInstructions, strDrinkThumb } = cocktailData;
-
-    const dataToSave = {
-      idDrink,
-      strDrink,
-      strInstructions,
-      strDrinkThumb
-    };
-
-    fetch("http://localhost:3000/cocktails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(dataToSave)
-    })
-      .then(res => res.json())
-      .then(data => console.log(data))
-      .catch(error => console.error("Error saving cocktail:", error));
+    console.log('Saving cocktail:', cocktailData);
   }
 
-  // Delete button click event listener (basic implementation)
+  // Delete button click event listener
   document.addEventListener('click', function (event) {
     if (event.target.matches('.deleteButton')) {
       const cocktailId = event.target.dataset.cocktailId;
       console.log('Deleting cocktail with ID:', cocktailId);
-      // Implement logic to delete from server or UI here
+    
     }
   });
 
@@ -81,16 +65,25 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     cocktails.forEach(cocktail => {
+      const instructions = cocktail.strInstructions.charAt(0).toUpperCase() + cocktail.strInstructions.slice(1).toLowerCase();
+
+
+      // Create a new object with the manipulated data
+      const modifiedCocktail = {
+        ...cocktail,
+        strInstructions: instructions
+      };
+
       const cocktailDiv = document.createElement('div');
       cocktailDiv.classList.add('cocktail');
       cocktailDiv.innerHTML = `
-        <h2>${cocktail.strDrink}</h2>
-        <img src="${cocktail.strDrinkThumb}" alt="${cocktail.strDrink}" width="100">
-        <p>Category: ${cocktail.strCategory}</p>
-        <p>Glass: ${cocktail.strGlass}</p>
-        <p>Instructions: ${cocktail.strInstructions}</p>
-        <button class="saveButton" data-cocktail='${JSON.stringify(cocktail)}'>Save</button>
-        <button class="deleteButton" data-cocktail-id='${cocktail.idDrink}'>Delete</button>
+        <h2>${modifiedCocktail.strDrink}</h2>
+        <img src="${modifiedCocktail.strDrinkThumb}" alt="${modifiedCocktail.strDrink}" width="100">
+        <p>Category: ${modifiedCocktail.strCategory}</p>
+        <p>Glass: ${modifiedCocktail.strGlass}</p>
+        <p>Instructions: ${modifiedCocktail.strInstructions}</p>
+        <button class="saveButton" data-cocktail='${JSON.stringify(modifiedCocktail)}'>Save</button>
+        <button class="deleteButton" data-cocktail-id='${modifiedCocktail.idDrink}'>Delete</button>
       `;
       cocktailList.appendChild(cocktailDiv);
     });
