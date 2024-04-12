@@ -45,6 +45,25 @@ document.addEventListener('DOMContentLoaded', function () {
           .catch(error => console.error("Error saving cocktail:", error));
   }
 
+ 
+  // Function to delete cocktail data
+function deleteCocktail(cocktailId) {
+  fetch(`http://localhost:3000/cocktails/${cocktailId}`, {
+      method: "DELETE",
+      headers: {
+          "Content-Type": "application/json"
+      }
+  })
+  .then(res => {
+      if (!res.ok) {
+          throw new Error('Failed to delete cocktail');
+      }
+      console.log("Cocktail deleted successfully");
+  })
+  .catch(error => console.error("Error deleting cocktail:", error));
+}
+
+
   // Function to display cocktails
   function displayCocktails(cocktails) {
       console.log('Received cocktails:', cocktails);
