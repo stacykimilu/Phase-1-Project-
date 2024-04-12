@@ -14,7 +14,7 @@ To run the Cocktail Search App locally, follow these steps:
 1. Ensure you have Node.js installed on your device.
 2. Fork and clone the repository to your local machine.
 3. Navigate to the project directory using the terminal.
-4. Open a terminal and run the following command to start the application: npm start
+4. Open a terminal and run the following command to start the application: npm start.
 
 
 ## Folder Structure
