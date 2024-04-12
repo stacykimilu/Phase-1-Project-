@@ -3,29 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cocktail Search</title>
+  <!-- Title of the page -->
+  <title>Cocktail Connoisseur</title>
+  <!-- Link to external CSS file -->
   <link rel="stylesheet" href="index.css">
 </head>
 <body>
     
+
 <div class="container">
-    <div class="heading">
-        <div class="item">  
-            <h2 class="ui header">
-                <div class="content">Cocktail Search</div>
-                <div class="sub header" id="subtitle"></div>
-            </h2>
-        </div>
-    </div>
+  <div class="heading">
+    <h1 class="title">Cocktail Connoisseur</h1>
+    <!-- Subtitle to be populated dynamically-->
+    <p class="subtitle" id="subtitle"></p>
+  </div>
 
-    <div class="search-container">
-      <input type="text" id="searchInput" placeholder="Search by name...">
-      <button id="searchButton">Search</button>
+  <div class="search-container">
+    <!-- Input field for searching by name -->
+    <input type="text" id="searchInput" placeholder="Find your perfect drink...">
+    <button id="searchButton">Search</button>
+  </div>
 
-    </div>
-    <div id="cocktailList"></div>
+  <!-- Container to display cocktail list -->
+  <div id="cocktailList"></div>
 </div>
 
+<!-- Link to external JavaScript file -->
 <script src="index.js"></script>
 </body>
 </html>
