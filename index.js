@@ -45,15 +45,21 @@ document.addEventListener('DOMContentLoaded', function () {
           .catch(error => console.error("Error saving cocktail:", error));
   }
 
-  // Function to delete cocktail data
-  function deleteCocktail() {
-      fetch(`http://localhost:3000/cocktails/`, {
-          method: "DELETE",
-      })
-          .then(res => res.json())
-          .then(data => console.log(data))
-          .catch(error => console.error("Error deleting cocktail:", error));
-  }
+  function deleteCocktail(cocktailId) {
+    fetch(`http://localhost:3000/cocktails/${cocktailId}`, {
+        method: "DELETE",
+    })
+    .then(res => {
+        if (!res.ok) {
+            // If the response status is not OK (200), throw an error
+            throw new Error('Failed to delete cocktail. Status: ' + res.status);
+        }
+        return res.json(); // Parse the response as JSON
+    })
+    .then(data => console.log(data))
+    .catch(error => console.error("Error deleting cocktail:", error));
+}
+
 
   // Function to display cocktails
   function displayCocktails(cocktails) {
@@ -83,10 +89,14 @@ document.addEventListener('DOMContentLoaded', function () {
               <p>Category: ${modifiedCocktail.strCategory}</p>
               <p>Glass: ${modifiedCocktail.strGlass}</p>
               <p>Instructions: ${modifiedCocktail.strInstructions}</p>
-              <button onclick="saveCocktail()">Save Cocktail</button>
-              <button onclick="deleteCocktail()">Delete Cocktail</button>
+              <button class="save-btn">Save Cocktail</button>
+              <button class="delete-btn">Delete Cocktail</button>
           `;
           cocktailList.appendChild(cocktailDiv);
+
+          // Attach event listeners dynamically
+          cocktailDiv.querySelector('.save-btn').addEventListener('click', saveCocktail);
+          cocktailDiv.querySelector('.delete-btn').addEventListener('click', deleteCocktail);
       });
   }
 });
