@@ -45,21 +45,25 @@ document.addEventListener('DOMContentLoaded', function () {
           .catch(error => console.error("Error saving cocktail:", error));
   }
 
-  function deleteCocktail(cocktailId) {
-    fetch(`http://localhost:3000/cocktails/${cocktailId}`, {
-        method: "DELETE",
-    })
-    .then(res => {
-        if (!res.ok) {
-            // If the response status is not OK (200), throw an error
-            throw new Error('Failed to delete cocktail. Status: ' + res.status);
-        }
-        return res.json(); // Parse the response as JSON
-    })
-    .then(data => console.log(data))
-    .catch(error => console.error("Error deleting cocktail:", error));
-}
-
+  // Function to delete cocktail data
+  async function deleteCocktail(cocktailId) {
+      try {
+          const requestOptions = {
+              method: "DELETE"
+          };
+          const response = await fetch(`http://localhost:3000/cocktails/${cocktailId}`, requestOptions);
+          if (!response.ok) {
+              throw new Error("Failed to delete cocktail.");
+          }
+          // Remove the cocktail from the UI
+          const cocktailElement = document.querySelector(`[data-id="${cocktailId}"]`);
+          if (cocktailElement) {
+              cocktailElement.remove();
+          }
+      } catch (error) {
+          console.error("Error deleting cocktail:", error);
+      }
+  }
 
   // Function to display cocktails
   function displayCocktails(cocktails) {
@@ -83,6 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
           const cocktailDiv = document.createElement('div');
           cocktailDiv.classList.add('cocktail');
+          cocktailDiv.dataset.id = cocktail.idDrink; // Set data-id attribute
           cocktailDiv.innerHTML = `
               <h2>${modifiedCocktail.strDrink}</h2>
               <img src="${modifiedCocktail.strDrinkThumb}" alt="${modifiedCocktail.strDrink}" width="100">
@@ -96,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
           // Attach event listeners dynamically
           cocktailDiv.querySelector('.save-btn').addEventListener('click', saveCocktail);
-          cocktailDiv.querySelector('.delete-btn').addEventListener('click', deleteCocktail);
+          cocktailDiv.querySelector('.delete-btn').addEventListener('click', () => deleteCocktail(cocktail.idDrink));
       });
   }
 });

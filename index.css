@@ -1,6 +1,6 @@
 /* Background styles for the body */
 body {
-    background-image: url(images/barfrontpage.png); /* Set background image */
+    background-image: url(images/barfrontpage.png); /* Set the background image */
     background-repeat: no-repeat; 
     background-size: cover; /* Cover the entire background with the image */
     color: white;
